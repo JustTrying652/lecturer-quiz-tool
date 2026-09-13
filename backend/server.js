@@ -19,7 +19,7 @@ app.get('/api/health', (req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
-app.use('/api/questionsets', questionSetRoutes)
+app.use('/api/question-sets', questionSetRoutes)
 
 
 const server = http.createServer(app)
