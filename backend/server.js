@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 
 import { connectDB } from './db.js'
 import authRoutes from './routes/auth.js'
-
+import questionSetRoutes from './routes/questionsets.js'
 
 dotenv.config()
 
@@ -19,6 +19,8 @@ app.get('/api/health', (req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
+app.use('/api/questionsets', questionSetRoutes)
+
 
 const server = http.createServer(app)
 const io = new Server(server, {
