@@ -7,6 +7,9 @@ import dotenv from 'dotenv'
 import { connectDB } from './db.js'
 import authRoutes from './routes/auth.js'
 import questionSetRoutes from './routes/questionsets.js'
+import sessionRoutes from './routes/sessions.js'
+import { registerRoomHandlers } from './sockets/roomHandlers.js'
+
 
 dotenv.config()
 
@@ -20,7 +23,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/question-sets', questionSetRoutes)
-
+app.use('/api/sessions', sessionRoutes)
 
 const server = http.createServer(app)
 const io = new Server(server, {
@@ -42,3 +45,5 @@ connectDB().then(() => {
     console.log(`Server running on http://127.0.0.1:${PORT}`)
   })
 })
+
+registerRoomHandlers(io)
