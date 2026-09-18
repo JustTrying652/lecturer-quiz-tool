@@ -25,15 +25,16 @@ async function handleSubmit() {
     <h1>Log in</h1>
     <input v-model="email" placeholder="Email" type="email" />
     <input v-model="password" placeholder="Password" type="password" />
-    <button @click="handleSubmit">Log in</button>
+    <button class="primary" @click="handleSubmit">Log in</button>
     <p v-if="error" class="error">{{ error }}</p>
     <router-link to="/signup">Need an account? Sign up</router-link>
   </div>
 </template>
 
 <style scoped>
-.wrap { display: flex; flex-direction: column; gap: 12px; padding: 24px; max-width: 360px; margin: 0 auto; }
-input, button { padding: 12px; font-size: 1rem; border-radius: 8px; border: 1px solid #ccc; }
-button { cursor: pointer; }
-.error { color: crimson; }
+.wrap {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 48px 24px; max-width: 360px; margin: 0 auto;
+}
+h1 { font-family: var(--font-content); font-weight: 600; font-size: 1.8rem; margin: 0 0 8px; }
 </style>
