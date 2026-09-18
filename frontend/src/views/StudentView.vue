@@ -1,12 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useGameSocket } from '../composables/useGameSocket'
-
-import { watch } from 'vue'
-
-watch(question, (q) => {
-  selected.value = q?.alreadyAnswered ? '(already answered)' : null
-})
 
 const {
   connected, students, question, answerResult, roundResult, errorMessage,
@@ -17,6 +11,10 @@ const nickname = ref('')
 const roomCode = ref('')
 const hasJoined = ref(false)
 const selected = ref(null)
+
+watch(question, (q) => {
+  selected.value = q?.alreadyAnswered ? '(already answered)' : null
+})
 
 function handleJoin() {
   if (!nickname.value.trim() || !roomCode.value.trim()) return
