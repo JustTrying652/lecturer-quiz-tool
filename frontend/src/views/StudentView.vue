@@ -2,6 +2,12 @@
 import { ref, computed } from 'vue'
 import { useGameSocket } from '../composables/useGameSocket'
 
+import { watch } from 'vue'
+
+watch(question, (q) => {
+  selected.value = q?.alreadyAnswered ? '(already answered)' : null
+})
+
 const {
   connected, students, question, answerResult, roundResult, errorMessage,
   joinAsStudent, submitAnswer,
@@ -42,7 +48,10 @@ const revealed = computed(() => Boolean(roundResult.value))
       <p>{{ connected ? 'Connected' : 'Connecting…' }}</p>
       <h2>Players ({{ students.length }})</h2>
       <ul>
-        <li v-for="s in students" :key="s">{{ s }}</li>
+        <li v-for="s in students" :key="s.nickname">
+  {{ s.nickname }}
+  <span v-if="!s.online" class="offline"> (reconnecting…)</span>
+</li>
       </ul>
     </template>
 
