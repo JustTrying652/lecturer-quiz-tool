@@ -37,27 +37,24 @@ const revealed = computed(() => Boolean(roundResult.value))
       <h1>Join a session</h1>
       <input v-model="nickname" placeholder="Your name" maxlength="20" />
       <input v-model="roomCode" placeholder="Room code" maxlength="6" style="text-transform: uppercase" />
-      <button @click="handleJoin">Join</button>
+      <button class="primary" @click="handleJoin">Join</button>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </template>
 
     <template v-else-if="!question">
       <h1>Waiting for the host to start…</h1>
-      <p>{{ connected ? 'Connected' : 'Connecting…' }}</p>
+      <p class="muted">{{ connected ? 'Connected' : 'Connecting…' }}</p>
       <h2>Players ({{ students.length }})</h2>
-      <ul>
-        <li v-for="s in students" :key="s.nickname">
-  {{ s.nickname }}
-  <span v-if="!s.online" class="offline"> (reconnecting…)</span>
-</li>
-      </ul>
+      <div v-for="s in students" :key="s.nickname" class="ledger-row">
+        <span>{{ s.nickname }}<span v-if="!s.online" class="muted"> (reconnecting…)</span></span>
+      </div>
     </template>
 
     <template v-else>
-      <h1>{{ question.question }}</h1>
+      <h1 class="question">{{ question.question }}</h1>
 
-      <p v-if="answerResult && !revealed" :class="answerResult.correct ? 'correct' : 'wrong'">
-        {{ answerResult.correct ? `Correct! +${answerResult.points}` : 'Answer locked in' }}
+      <p v-if="answerResult && !revealed" :class="answerResult.correct ? 'good' : 'bad'">
+        {{ answerResult.correct ? `Correct — +${answerResult.points}` : 'Answer locked in' }}
       </p>
 
       <div class="grid">
@@ -67,7 +64,7 @@ const revealed = computed(() => Boolean(roundResult.value))
           @click="handleAnswer(opt)"
           :disabled="Boolean(selected) || revealed"
           :class="{
-            picked: selected === opt,
+            primary: selected === opt && !revealed,
             correctAnswer: revealed && opt === roundResult.answer,
             dimmed: revealed && opt !== roundResult.answer,
           }"
@@ -77,26 +74,27 @@ const revealed = computed(() => Boolean(roundResult.value))
       </div>
 
       <div v-if="revealed" class="reveal">
-        <p>Answer: {{ roundResult.answer }}</p>
-        <ol>
-          <li v-for="p in roundResult.scoreboard" :key="p.nickname">{{ p.nickname }} — {{ p.score }}</li>
-        </ol>
-        <p v-if="roundResult.gameOver">Game over!</p>
-        <p v-else>Waiting for the next round…</p>
+        <h2>Answer: {{ roundResult.answer }}</h2>
+        <div v-for="p in roundResult.scoreboard" :key="p.nickname" class="ledger-row">
+          <span>{{ p.nickname }}</span>
+          <span>{{ p.score }}</span>
+        </div>
+        <p v-if="roundResult.gameOver" class="muted">Game over.</p>
+        <p v-else class="muted">Waiting for the next round…</p>
       </div>
     </template>
   </div>
 </template>
 
 <style scoped>
-.wrap { display: flex; flex-direction: column; gap: 12px; padding: 24px; max-width: 480px; margin: 0 auto; }
-input, button { padding: 12px; font-size: 1rem; border-radius: 8px; border: 1px solid #ccc; }
-button { cursor: pointer; }
+.wrap { display: flex; flex-direction: column; gap: 14px; padding: 48px 24px; max-width: 480px; margin: 0 auto; }
+h1 { font-family: var(--font-content); font-weight: 600; font-size: 1.6rem; margin: 0 0 8px; }
+.question { font-size: 1.4rem; }
+h2 { font-family: var(--font-content); font-weight: 600; font-size: 1.15rem; margin: 8px 0; }
+.muted { color: var(--ink-soft); }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.picked { outline: 3px solid #333; }
-.correctAnswer { background: #7ed957; }
+.correctAnswer { background: var(--correct); color: white; border-color: var(--correct); }
 .dimmed { opacity: 0.4; }
-.correct { color: green; }
-.wrong { color: crimson; }
-.error { color: crimson; }
+.good { color: var(--correct); font-weight: 500; }
+.bad { color: var(--incorrect); font-weight: 500; }
 </style>
