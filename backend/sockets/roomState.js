@@ -4,8 +4,10 @@ export function createRoomState({ lecturerId, questions }) {
   return {
     lecturerId,
     questions,
-    students: new Map(),   // socketId -> nickname (LIVE presence only — removed on disconnect)
-    scores: new Map(),     // socketId -> { nickname, score } (persists for the whole game)
+    students: new Map(),      // studentId -> { nickname, socketId (null if offline) }
+    scores: new Map(),        // studentId -> { nickname, score }
+    socketToStudent: new Map(), // socketId -> studentId (this process only)
+    pendingRemoval: new Map(),  // studentId -> timeout handle
     hostSocketId: null,
 
     questionIndex: -1,
