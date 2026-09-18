@@ -21,30 +21,34 @@ joinAsHost(roomCode, token)
 
     <template v-if="!question">
       <h2>Players ({{ students.length }})</h2>
-      <ul>
-        <li v-for="s in students" :key="s">{{ s }}</li>
-      </ul>
-      <button @click="startRound">Start round</button>
+      <div v-for="s in students" :key="s.nickname" class="ledger-row">
+        <span>{{ s.nickname }}<span v-if="!s.online" class="muted"> (reconnecting…)</span></span>
+      </div>
+      <button class="primary start" @click="startRound">Start round</button>
     </template>
 
     <template v-else-if="!roundResult">
-      <h2>{{ question.question }}</h2>
-      <p>Round in progress…</p>
+      <h2 class="question">{{ question.question }}</h2>
+      <p class="muted">Round in progress…</p>
     </template>
 
     <template v-else>
-      <h2>Answer: {{ roundResult.answer }}</h2>
-      <ol>
-        <li v-for="p in roundResult.scoreboard" :key="p.nickname">{{ p.nickname }} — {{ p.score }}</li>
-      </ol>
-      <p v-if="roundResult.gameOver">Game over!</p>
-      <button v-else @click="startRound">Next round</button>
+      <h2 class="question">Answer: {{ roundResult.answer }}</h2>
+      <div v-for="p in roundResult.scoreboard" :key="p.nickname" class="ledger-row">
+        <span>{{ p.nickname }}</span>
+        <span>{{ p.score }}</span>
+      </div>
+      <p v-if="roundResult.gameOver" class="muted">Game over.</p>
+      <button v-else class="primary start" @click="startRound">Next round</button>
     </template>
   </div>
 </template>
 
 <style scoped>
-.wrap { display: flex; flex-direction: column; gap: 16px; padding: 24px; max-width: 480px; margin: 0 auto; }
-button { padding: 12px; font-size: 1rem; border-radius: 8px; cursor: pointer; }
-.error { color: crimson; }
+.wrap { display: flex; flex-direction: column; gap: 16px; padding: 48px 24px; max-width: 480px; margin: 0 auto; }
+h1 { font-family: var(--font-content); font-weight: 600; font-size: 1.6rem; margin: 0 0 8px; }
+h2 { font-family: var(--font-content); font-weight: 600; font-size: 1.15rem; margin: 8px 0; }
+.question { font-size: 1.4rem; }
+.muted { color: var(--ink-soft); }
+.start { margin-top: 12px; align-self: flex-start; }
 </style>
