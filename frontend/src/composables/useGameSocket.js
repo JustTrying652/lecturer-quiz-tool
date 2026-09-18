@@ -12,9 +12,14 @@ export function useGameSocket() {
   const answerResult = ref(null)
   const roundResult = ref(null)
   const errorMessage = ref(null)
+  const studentId = ref(null)
 
   socket.on('connect', () => { connected.value = true })
   socket.on('disconnect', () => { connected.value = false })
+
+  socket.on('joined', (data) => {
+    studentId.value = data.studentId
+  })
 
   socket.on('student_list', (data) => { students.value = data.students })
 
@@ -29,7 +34,14 @@ export function useGameSocket() {
   socket.on('error_message', (data) => { errorMessage.value = data.message })
 
   function joinAsStudent(roomCode, nickname) {
-    socket.emit('student_join', { roomCode, nickname })
+    const storageKey = `quiz:studentId:${roomCode}`
+    const storedId = sessionStorage.getItem(storageKey)
+
+    socket.emit('student_join', { roomCode, nickname, studentId: storedId || undefined })
+
+    socket.once('joined', (data) => {
+      sessionStorage.setItem(storageKey, data.studentId)
+    })
   }
 
   function submitAnswer(choice) {
@@ -49,7 +61,7 @@ export function useGameSocket() {
   })
 
   return {
-    connected, students, question, answerResult, roundResult, errorMessage,
+    connected, students, question, answerResult, roundResult, errorMessage, studentId,
     joinAsStudent, submitAnswer, joinAsHost, startRound,
   }
 }
